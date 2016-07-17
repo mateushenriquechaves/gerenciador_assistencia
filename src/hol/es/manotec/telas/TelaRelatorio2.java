@@ -52,6 +52,7 @@ public class TelaRelatorio2 extends javax.swing.JInternalFrame {
             pst = conexao.prepareStatement(sqlAgosto);
             rs = pst.executeQuery();
             DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            int row = pst.getMaxRows();
             while(rs.next()) {
                 i++;
                 String type = rs.getString(11);
@@ -72,7 +73,6 @@ public class TelaRelatorio2 extends javax.swing.JInternalFrame {
              ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
             frame.setVisible(true);
             frame.setSize(498,350);
-            
         } catch (Exception e) {
         }
     }
@@ -88,7 +88,7 @@ public class TelaRelatorio2 extends javax.swing.JInternalFrame {
         try {
             pst = conexao.prepareStatement(sqlAgosto);
             rs = pst.executeQuery();
-            
+            int row = pst.getMaxRows();
             while(rs.next()) {
                 i++;
                 String type = rs.getString(11);
@@ -111,10 +111,6 @@ public class TelaRelatorio2 extends javax.swing.JInternalFrame {
              ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
             frame.setVisible(true);
             frame.setSize(498,350);
-            
-            
-              
-            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -131,6 +127,7 @@ public class TelaRelatorio2 extends javax.swing.JInternalFrame {
         try {
             pst = conexao.prepareStatement(sqlAgosto);
             rs = pst.executeQuery();
+            int row = pst.getMaxRows();
             while(rs.next()) {
                 i++;
                 String type = rs.getString(11);
@@ -154,8 +151,6 @@ public class TelaRelatorio2 extends javax.swing.JInternalFrame {
         ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
         frame.setVisible(true);
         frame.setSize(498,350);
-            
-            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
@@ -173,6 +168,7 @@ public class TelaRelatorio2 extends javax.swing.JInternalFrame {
         try {
             pst = conexao.prepareStatement(sqlAgosto);
             rs = pst.executeQuery();
+            int row = pst.getMaxRows();
             DefaultCategoryDataset dataset = new DefaultCategoryDataset();
             while(rs.next()) {
                 i++;
@@ -195,11 +191,1144 @@ public class TelaRelatorio2 extends javax.swing.JInternalFrame {
              ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
             frame.setVisible(true);
             frame.setSize(498,350);
-            
+        } catch (Exception e) {
+        }
+    }
+     
+      public void janeiroOs() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 1";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getFetchSize();
+            System.out.println(row);
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 1){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 1) {
+                    quant_os++;
+                    valor_os += valor;
+                }
+            }
+            dataset.setValue(quant_os, "Ordem de serviço", meses[0]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+    }
+      
+      public void janeiroTudo() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 1";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = rs.getRow();
+            System.out.println(row);
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 1){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if (type.equals("Ordem de serviço") && mes == 1) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(quant_orcamento, "Orçamento", "Orçamento");
+            dataset.setValue(valor_os, "Lucro", "Lucro");
+            dataset.setValue(quant_os, "Ordem de serviço", "Ordens de serviços");
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços do mes de Janeiro", "", "Quantidade", dataset, PlotOrientation.VERTICAL, false, true, false);
+        CategoryPlot p = chart.getCategoryPlot();
+        p.setRangeGridlinePaint(Color.BLACK);
+        ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+        frame.setVisible(true);
+        frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+      
+      public void janeiroLucro() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 1";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getMaxRows();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 1){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 1) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(valor_os, "Lucro", meses[0]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços ","Mês", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+      
+      public void janeiro() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 1";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            int row = pst.getMaxRows();
+            System.out.println(row);
+            while(rs.next()) {
+                
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 1){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 1) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            dataset.setValue(quant_orcamento, "Orçamento", meses[0]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+        
+    }
+    
+    //Fevereiro Orçamento 
+      
+      public void fevereiro() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 2";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            int row = pst.getMaxRows();
+            System.out.println(row);
+            while(rs.next()) {
+                
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 2){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 2) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            dataset.setValue(quant_orcamento, "Orçamento", meses[1]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+        
+    }
+      
+      //Fevereiro Ordem de serviços
+      
+       public void fevereiroOs() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 2";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getFetchSize();
+            System.out.println(row);
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 2){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 2) {
+                    quant_os++;
+                    valor_os += valor;
+                }
+            }
+            dataset.setValue(quant_os, "Ordem de serviço", meses[1]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
         } catch (Exception e) {
         }
     }
     
+    // Fevereiro tudo 
+       public void fevereiroTudo() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 2";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = rs.getRow();
+            System.out.println(row);
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 2){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if (type.equals("Ordem de serviço") && mes == 2) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(quant_orcamento, "Orçamento", "Orçamento");
+            dataset.setValue(valor_os, "Lucro", "Lucro");
+            dataset.setValue(quant_os, "Ordem de serviço", "Ordens de serviços");
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços do mes de Fevereiro", "", "Quantidade", dataset, PlotOrientation.VERTICAL, false, true, false);
+        CategoryPlot p = chart.getCategoryPlot();
+        p.setRangeGridlinePaint(Color.BLACK);
+        ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+        frame.setVisible(true);
+        frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+       
+       // Fevereiro Lucro 
+       
+       public void fevereiroLucro() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 2";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getMaxRows();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 2){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 2) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(valor_os, "Lucro", meses[1]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços ","Mês", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+       
+       // Março orçamento 
+       
+       public void marco() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 3";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            int row = pst.getMaxRows();
+            while(rs.next()) {
+                
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 3){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 3) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            dataset.setValue(quant_orcamento, "Orçamento", meses[2]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+        
+    }
+       // Março ordem de serviço
+       public void marcoOs() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 3";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getFetchSize();
+            System.out.println(row);
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 3){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 3) {
+                    quant_os++;
+                    valor_os += valor;
+                }
+            }
+            dataset.setValue(quant_os, "Ordem de serviço", meses[2]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+    }
+       
+       // Março Tudo
+       public void marcoTudo() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 3";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = rs.getRow();
+            System.out.println(row);
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 3){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if (type.equals("Ordem de serviço") && mes == 3) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(quant_orcamento, "Orçamento", "Orçamento");
+            dataset.setValue(valor_os, "Lucro", "Lucro");
+            dataset.setValue(quant_os, "Ordem de serviço", "Ordens de serviços");
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços do mes de Março", "", "Quantidade", dataset, PlotOrientation.VERTICAL, false, true, false);
+        CategoryPlot p = chart.getCategoryPlot();
+        p.setRangeGridlinePaint(Color.BLACK);
+        ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+        frame.setVisible(true);
+        frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+       // Tudo de março
+        public void marcoLucro() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 3";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getMaxRows();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 3){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 3) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(valor_os, "Lucro", meses[2]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços ","Mês", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+        
+        // Orçamentos do mês de abril 
+        public void abril() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 4";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            int row = pst.getMaxRows();
+            while(rs.next()) {
+                
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 4){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 4) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            dataset.setValue(quant_orcamento, "Orçamento", meses[3]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+        
+    }
+        
+        // Ordens de serviço do mês de abril 
+        
+         public void abrilOs() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 4";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getFetchSize();
+            System.out.println(row);
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 4){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 4) {
+                    quant_os++;
+                    valor_os += valor;
+                }
+            }
+            dataset.setValue(quant_os, "Ordem de serviço", meses[3]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+    }
+         
+         // Tudo do mês de abril 
+         
+         public void abrilTudo() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 4";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = rs.getRow();
+            System.out.println(row);
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 4){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if (type.equals("Ordem de serviço") && mes == 4) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(quant_orcamento, "Orçamento", "Orçamento");
+            dataset.setValue(valor_os, "Lucro", "Lucro");
+            dataset.setValue(quant_os, "Ordem de serviço", "Ordens de serviços");
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços do mes de Abril", "", "Quantidade", dataset, PlotOrientation.VERTICAL, false, true, false);
+        CategoryPlot p = chart.getCategoryPlot();
+        p.setRangeGridlinePaint(Color.BLACK);
+        ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+        frame.setVisible(true);
+        frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+         
+         // Lucro do mês de abril 
+         
+         public void abrilLucro() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 4";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getMaxRows();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 4){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 4) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(valor_os, "Lucro", meses[3]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços ","Mês", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+        
+       // Orçamentos de maio 
+         
+         public void maio() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 5";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            int row = pst.getMaxRows();
+            while(rs.next()) {
+                
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 5){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 5) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            dataset.setValue(quant_orcamento, "Orçamento", meses[4]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+        
+    }
+         
+         // Ordens de serviços do mês de maio
+         public void maioOs() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 5";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getFetchSize();
+            System.out.println(row);
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 5){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 5) {
+                    quant_os++;
+                    valor_os += valor;
+                }
+            }
+            dataset.setValue(quant_os, "Ordem de serviço", meses[4]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+    }
+         // Tudo do mes de maio
+         public void maioTudo() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 5";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = rs.getRow();
+            System.out.println(row);
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 5){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if (type.equals("Ordem de serviço") && mes == 5) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(quant_orcamento, "Orçamento", "Orçamento");
+            dataset.setValue(valor_os, "Lucro", "Lucro");
+            dataset.setValue(quant_os, "Ordem de serviço", "Ordens de serviços");
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços do mes de Maio", "", "Quantidade", dataset, PlotOrientation.VERTICAL, false, true, false);
+        CategoryPlot p = chart.getCategoryPlot();
+        p.setRangeGridlinePaint(Color.BLACK);
+        ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+        frame.setVisible(true);
+        frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+         // Lucro do mês de maio 
+         
+          public void maioLucro() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 5";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getMaxRows();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 5){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 5) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(valor_os, "Lucro", meses[4]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços ","Mês", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+        // Orçamentos do mês de junho 
+           public void junho() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 6";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            int row = pst.getMaxRows();
+            while(rs.next()) {
+                
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 6){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 6) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            dataset.setValue(quant_orcamento, "Orçamento", meses[5]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+        
+    }
+         
+         // Ordens de serviços do mês de junho
+         public void junhoOs() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 6";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getFetchSize();
+            System.out.println(row);
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 6){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 6) {
+                    quant_os++;
+                    valor_os += valor;
+                }
+            }
+            dataset.setValue(quant_os, "Ordem de serviço", meses[5]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+    }
+         // Tudo do mes de junho
+         public void junhoTudo() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 6";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = rs.getRow();
+            System.out.println(row);
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 6){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if (type.equals("Ordem de serviço") && mes == 6) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(quant_orcamento, "Orçamento", "Orçamento");
+            dataset.setValue(valor_os, "Lucro", "Lucro");
+            dataset.setValue(quant_os, "Ordem de serviço", "Ordens de serviços");
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços do mes de Junho", "", "Quantidade", dataset, PlotOrientation.VERTICAL, false, true, false);
+        CategoryPlot p = chart.getCategoryPlot();
+        p.setRangeGridlinePaint(Color.BLACK);
+        ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+        frame.setVisible(true);
+        frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+         // Lucro do mês de junho 
+         
+          public void junhoLucro() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 6";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getMaxRows();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 6){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 6) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(valor_os, "Lucro", meses[5]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços ","Mês", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+          
+          // Orçamentos do mês de julho 
+          public void julho() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 7";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            int row = pst.getMaxRows();
+            while(rs.next()) {
+                
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 7){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 7) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            dataset.setValue(quant_orcamento, "Orçamento", meses[6]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+        
+    }
+         
+         // Ordens de serviços do mês de julho
+         public void julhoOs() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 7";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getFetchSize();
+            System.out.println(row);
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 7){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 7) {
+                    quant_os++;
+                    valor_os += valor;
+                }
+            }
+            dataset.setValue(quant_os, "Ordem de serviço", meses[6]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços", "Meses", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+        }
+    }
+         // Tudo do mes de julho
+         public void julhoTudo() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 7";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = rs.getRow();
+            System.out.println(row);
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                if(type.equals("Orçamento") && mes == 7){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if (type.equals("Ordem de serviço") && mes == 7) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(quant_orcamento, "Orçamento", "Orçamento");
+            dataset.setValue(valor_os, "Lucro", "Lucro");
+            dataset.setValue(quant_os, "Ordem de serviço", "Ordens de serviços");
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços do mes de Julho", "", "Quantidade", dataset, PlotOrientation.VERTICAL, false, true, false);
+        CategoryPlot p = chart.getCategoryPlot();
+        p.setRangeGridlinePaint(Color.BLACK);
+        ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+        frame.setVisible(true);
+        frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+         // Lucro do mês de maio 
+         
+          public void julhoLucro() {
+        String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
+        String sqlJaneiro = "select * from tbos where tipo = 'Orçamento' or tipo = 'Ordem de serviço' AND mes = 7";
+        int i = 0;
+        int quant_orcamento = 0;
+        double valor_orcamento = 0;
+        double valor_os = 0;
+        int quant_os = 0;
+        try {
+            pst = conexao.prepareStatement(sqlJaneiro);
+            rs = pst.executeQuery();
+            int row = pst.getMaxRows();
+            while(rs.next()) {
+                i++;
+                String type = rs.getString(11);
+                int mes = rs.getInt(12);
+                double valor = rs.getDouble(7);
+                if(type.equals("Orçamento") && mes == 7){
+                    quant_orcamento++;
+                    valor_orcamento += rs.getDouble(7);
+                    
+                }else if(type.equals("Ordem de serviço") && mes == 7) {
+                    quant_os++;
+                    valor_os += rs.getDouble(7);
+                }
+            }
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.setValue(valor_os, "Lucro", meses[6]);
+            JFreeChart chart = ChartFactory.createBarChart("Orçamentos e Ordem de serviços ","Mês", "Quantidade", dataset, PlotOrientation.VERTICAL,               false, true, false);
+            CategoryPlot p = chart.getCategoryPlot();
+            p.setRangeGridlinePaint(Color.BLACK);
+             ChartFrame frame = new ChartFrame("Gráfico de barras", chart);
+            frame.setVisible(true);
+            frame.setSize(498,350);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+       
     public void relatorio_anual(){
         String meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
         String sql = "select * from tbos where ano = ?";
@@ -259,8 +1388,7 @@ public class TelaRelatorio2 extends javax.swing.JInternalFrame {
             pst = conexao.prepareStatement(sql);
             pst.setInt(1, a);
             rs = pst.executeQuery();
-           
-           
+            int row = pst.getMaxRows();
             while(rs.next()){
                  int mes = rs.getInt(12);
             String type = rs.getString(11);
@@ -589,6 +1717,64 @@ public class TelaRelatorio2 extends javax.swing.JInternalFrame {
         if(combMes.getSelectedItem().toString().equals("Ano Todo")) {
             relatorio_anual();
             System.out.println("uadhuasdhuashduashduashd");
+        }else if(combMes.getSelectedItem().toString().equals("Janeiro") && combOrg.getSelectedItem().toString().equals("Ordem de serviços")) {
+            janeiroOs();
+        }else if(combMes.getSelectedItem().toString().equals("Janeiro") && combOrg.getSelectedItem().toString().equals("Tudo")) {
+            janeiroTudo();
+        }else if(combMes.getSelectedItem().toString().equals("Janeiro") && combOrg.getSelectedItem().toString().equals("Lucro")){
+            janeiroLucro();
+        }else if(combMes.getSelectedItem().toString().equals("Janeiro") && combOrg.getSelectedItem().toString().equals("Orçamento")) {
+            janeiro();
+        }else if(combMes.getSelectedItem().toString().equals("Fevereiro") && combOrg.getSelectedItem().toString().equals("Ordem de serviços")) {
+            fevereiroOs();
+        }else if(combMes.getSelectedItem().toString().equals("Fevereiro") && combOrg.getSelectedItem().toString().equals("Tudo")) {
+            fevereiroTudo();
+        }else if(combMes.getSelectedItem().toString().equals("Fevereiro") && combOrg.getSelectedItem().toString().equals("Lucro")){
+            fevereiroLucro();
+        }else if(combMes.getSelectedItem().toString().equals("Fevereiro") && combOrg.getSelectedItem().toString().equals("Orçamento")){
+            fevereiro();
+        }else if(combMes.getSelectedItem().toString().equals("Março") && combOrg.getSelectedItem().toString().equals("Ordem de seviços")){
+            marco();
+        }else if(combMes.getSelectedItem().toString().equals("Março") && combOrg.getSelectedItem().toString().equals("Tudo")){
+            marcoTudo();
+        }else if(combMes.getSelectedItem().toString().equals("Março") && combOrg.getSelectedItem().toString().equals("Lucro")){
+            marcoLucro();
+        }else if(combMes.getSelectedItem().toString().equals("Março") && combOrg.getSelectedItem().toString().equals("Orçamento")){
+            marco();
+        }else if(combMes.getSelectedItem().toString().equals("Março") && combOrg.getSelectedItem().toString().equals("Ordem de serviços")){
+            marcoOs();
+        }else if(combMes.getSelectedItem().toString().equals("Abril") && combOrg.getSelectedItem().toString().equals("Tudo")){
+            abrilTudo();
+        }else if(combMes.getSelectedItem().toString().equals("Abril") && combOrg.getSelectedItem().toString().equals("Orçamento")){
+            abril();
+        }else if(combMes.getSelectedItem().toString().equals("Abril") && combOrg.getSelectedItem().toString().equals("Ordem de serviços")) {
+            abrilOs();
+        }else if(combMes.getSelectedItem().toString().equals("Abril") && combOrg.getSelectedItem().toString().equals("Lucro")){
+            abrilLucro();
+        }else if(combMes.getSelectedItem().toString().equals("Maio") && combOrg.getSelectedItem().toString().equals("Tudo")){
+            maioTudo();
+        }else if(combMes.getSelectedItem().toString().equals("Maio") && combOrg.getSelectedItem().toString().equals("Lucro")){
+            maioLucro();
+        }else if(combMes.getSelectedItem().toString().equals("Maio") && combOrg.getSelectedItem().toString().equals("Ordem de serviços")){
+            maioOs();
+        }else if(combMes.getSelectedItem().toString().equals("Maio") && combOrg.getSelectedItem().toString().equals("Orçamento")){
+            maio();
+        }else if(combMes.getSelectedItem().toString().equals("Junho") && combOrg.getSelectedItem().toString().equals("Orçamento")){
+            junho();
+        }else if(combMes.getSelectedItem().toString().equals("Junho") && combOrg.getSelectedItem().toString().equals("Ordem de serviços")){
+            junhoOs();
+        }else if(combMes.getSelectedItem().toString().equals("Junho") && combOrg.getSelectedItem().toString().equals("Lucro")){
+            junhoLucro();
+        }else if(combMes.getSelectedItem().toString().equals("Junho") && combOrg.getSelectedItem().toString().equals("Tudo")){
+            junhoTudo();        
+        }else if(combMes.getSelectedItem().toString().equals("Julho") && combOrg.getSelectedItem().toString().equals("Tudo")){
+            julhoTudo();
+        }else if(combMes.getSelectedItem().toString().equals("Julho") && combOrg.getSelectedItem().toString().equals("Orçamento")){
+            julho();
+        }else if(combMes.getSelectedItem().toString().equals("Julho") && combOrg.getSelectedItem().toString().equals("Lucro")){
+            julhoLucro();
+        }else if(combMes.getSelectedItem().toString().equals("Julho") && combOrg.getSelectedItem().toString().equals("Ordem de serviços")){
+            julhoOs();
         }
     }//GEN-LAST:event_btnGraActionPerformed
 
